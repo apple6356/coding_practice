@@ -1,4 +1,4 @@
-package Level0;
+package level0;
 
 public class String_mul {
     public static void main(String[] args) {
