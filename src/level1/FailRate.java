@@ -9,6 +9,10 @@ public class FailRate {
         int N = 5;
         int[] stages = {2, 1, 2, 6, 2, 4, 3, 3};
         System.out.println(Arrays.toString(failRate.solution(N, stages)));
+
+        N = 4;
+        int[] stages2 = {4, 4, 4, 4, 4};
+        System.out.println(Arrays.toString(failRate.solution(N, stages2)));
     }
 
     public int[] solution(int N, int[] stages) {
@@ -32,9 +36,28 @@ public class FailRate {
             rate.replace(i, v);
         }
 
+        // answer 초기화
         for (int i = 0; i < answer.length; i++) {
-            for (int j = i + 1; j < answer.length; j++) {
+            answer[i] = i + 1;
+        }
 
+        // 실패율이 높은 순서로 정렬
+        for (int i = 0; i < answer.length; i++) {
+            int temp;
+            for (int j = i + 1; j < answer.length; j++) {
+                // 실패율이 같으면 작은 스테이지가 앞으로 가게한다
+                if (rate.get(answer[i]).equals(rate.get(answer[j]))) {  // == 비교 시 실행 안됨, .equals 사용해야함
+                    if (answer[i] > answer[j]) {
+                        temp = answer[i];
+                        answer[i] = answer[j];
+                        answer[j] = temp;
+                    }
+                }
+                if (rate.get(answer[i]) < rate.get(answer[j])) {
+                    temp = answer[i];
+                    answer[i] = answer[j];
+                    answer[j] = temp;
+                }
             }
         }
 
