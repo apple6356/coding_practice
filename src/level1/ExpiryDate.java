@@ -1,8 +1,9 @@
 package level1;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ExpiryDate {
 
@@ -23,13 +24,13 @@ public class ExpiryDate {
 
     public int[] solution(String today, String[] terms, String[] privacies) {
         int[] answer;
-        String des = "";
+        List<Integer> des = new ArrayList<>();
 
-        String[] todayStr = today.split("\\.");
-        int todayYear = Integer.parseInt(todayStr[0]);
-        int todayMonth = Integer.parseInt(todayStr[1]);
-        int todayDay = Integer.parseInt(todayStr[2]);
+        // String 타입인 today를 LocalDate 타입으로 변경
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        LocalDate todayDate = LocalDate.parse(today, formatter);
 
+        // terms를 Map형태로 저장
         Map<String, Integer> termMap = new HashMap<>();
         for (String s : terms) {
             termMap.put(s.replaceAll("[^A-Z]", ""),
@@ -37,25 +38,22 @@ public class ExpiryDate {
         }
 
         for (int i = 0; i < privacies.length; i++) {
-            String[] privDate = privacies[i].replaceAll("[A-Z\\s]", "").split("\\.");
-            int privYear = Integer.parseInt(privDate[0]);
-            int privMonth = Integer.parseInt(privDate[1]);
-            int privDay = Integer.parseInt(privDate[2]);
+            // privacies에 있는 날짜를 LocalDate로 변경
+            LocalDate privDate = LocalDate.parse(privacies[i].replaceAll("[A-Z\\s]", ""), formatter);
+            // 유효기간만큼 Month+   참고 : https://velog.io/@ow1011/LocalDate-%EB%A9%94%EC%84%9C%EB%93%9C-%EC%A0%95%EB%A6%AC
+            privDate = privDate.plusMonths(termMap.get(privacies[i].replaceAll("[^A-Z]", "")));
+            // 유효기간에 -1을 해 개인정보 폐기날짜 구하기
+            privDate = privDate.minusDays(1);
 
-            int diff = 0;
-            diff += (todayYear - privYear) * (28 * 12);
-            diff += (todayMonth - privMonth) * 28;
-            int termInt = (termMap.get(privacies[i].replaceAll("[^A-Z]", "")) * 28);
-
-            if (diff > termInt) des += i;
-            else if (privDay == 1) {
-
-            } else if (diff == termInt && todayDay >= privDay) des += i;
+            // 오늘 날짜와 개인정보 폐기일을 비교해 des List에 삽입
+            if (privDate.isBefore(todayDate)) {
+                des.add(i + 1);
+            }
         }
 
-        answer = new int[des.length()];
-        for (int i = 0; i < des.length(); i++) {
-            answer[i] = (des.charAt(i) - '0') + 1;
+        answer = new int[des.size()];
+        for (int i = 0; i < des.size(); i++) {
+            answer[i] = des.get(i);
         }
 
         return answer;
