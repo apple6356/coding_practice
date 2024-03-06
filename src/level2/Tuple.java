@@ -1,8 +1,6 @@
 package level2;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Tuple {
 
@@ -17,31 +15,35 @@ public class Tuple {
 
     public int[] solution(String s) {
         int[] answer = {};
-        Map<Integer, String> map = new HashMap<>();
-        s = s.substring(1, s.length());
-        boolean flag = false;
-        int idx = 0;
+        Set<Integer> set = new LinkedHashSet<>();
 
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '{') {
-                flag = true;
-                continue;
-            } else if (s.charAt(i) == '}') {
-                flag = false;
-                idx++;
-                continue;
-            }
+        // 앞 뒤 괄호 제거
+        s = s.substring(2, s.length() - 2);
 
-            if (flag) {
-                String str;
-                if (map.get(idx) != null) {
-                    str = map.get(idx) + s.charAt(i);
-                } else str = String.valueOf(s.charAt(i));
+        // },{ 로 스플릿해서 배열 생성
+        String[] str = s.split("},\\{");
 
-                map.put(idx, str);
-                System.out.println(map.get(idx));
+        // 배열의 크기 순으로 정렬
+        for (int i = 0; i < str.length; i++) {
+            for (int j = i + 1; j < str.length; j++) {
+                if (str[i].length() > str[j].length()) {
+                    String temp = str[i];
+                    str[i] = str[j];
+                    str[j] = temp;
+                }
             }
         }
+
+        // 중복이 허용되지 않는 set의 특성 이용
+        for (int i = 0; i < str.length; i++) {
+            String[] s1 = str[i].split(",");
+            for (int j = 0; j < s1.length; j++) {
+                set.add(Integer.parseInt(s1[j]));
+            }
+        }
+
+        // set을 배열로 변환해 저장
+        answer = set.stream().mapToInt(Integer::intValue).toArray();
 
         return answer;
     }
