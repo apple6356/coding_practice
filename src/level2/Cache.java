@@ -7,20 +7,20 @@ public class Cache {
     public static void main(String[] args) {
         Cache cache = new Cache();
         String[] cities = new String[]{"Jeju", "Pangyo", "Seoul", "NewYork", "LA", "Jeju", "Pangyo", "Seoul", "NewYork", "LA"};
-        System.out.println(cache.solution(3, cities));
+        System.out.println(solution(3, cities));
         cities = new String[]{"Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul", "Jeju", "Pangyo", "Seoul"};
-        System.out.println(cache.solution(3, cities));
+        System.out.println(solution(3, cities));
         cities = new String[]{"Jeju", "Pangyo", "Seoul", "NewYork", "LA", "SanFrancisco", "Seoul", "Rome", "Paris", "Jeju", "NewYork", "Rome"};
-        System.out.println(cache.solution(2, cities));
+        System.out.println(solution(2, cities));
         cities = new String[]{"Jeju", "Pangyo", "Seoul", "NewYork", "LA", "SanFrancisco", "Seoul", "Rome", "Paris", "Jeju", "NewYork", "Rome"};
-        System.out.println(cache.solution(5, cities));
+        System.out.println(solution(5, cities));
         cities = new String[]{"Jeju", "Pangyo", "NewYork", "newyork"};
-        System.out.println(cache.solution(2, cities));
+        System.out.println(solution(2, cities));
         cities = new String[]{"Jeju", "Pangyo", "Seoul", "NewYork", "LA"};
-        System.out.println(cache.solution(0, cities));
+        System.out.println(solution(0, cities));
     }
 
-    public int solution(int cacheSize, String[] cities) {
+    public static int solution(int cacheSize, String[] cities) {
         // LRU 알고리즘 사용 ( 가장 오랫동안 사용되지 않은 페이지를 교체하는 기법 )
         int answer = 0;
         List<String> cacheList = new LinkedList<>();    // 캐시
