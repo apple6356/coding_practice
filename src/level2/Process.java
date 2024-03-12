@@ -14,30 +14,40 @@ public class Process {
 
     public static int solution(int[] priorities, int location) {
         int answer = 0;
+        // PriorityQueue(우선순위 큐) 사용해 푸는 방법 존재
+        Queue<Integer> queue = new LinkedList<>();  // 우선순위 저장할 큐
+        List<Integer> list = new ArrayList<>(); // 큐는 인덱스로 접근 불가 하기 때문에 큐의 순서 저장
 
-        int i = 0;
-        boolean b = true;
-        while (b) {
-            if (i >= priorities.length) i = 0;
+        for (int i = 0; i < priorities.length; i++) {
+            queue.offer(priorities[i]);
+            list.add(i);
+        }
 
-            for (int j = i + 1; j < priorities.length; j++) {
-                if (priorities[i] < priorities[j]) {
-                    System.out.println("i = " + i + ", j = " + j);
-                    i = j;
-                    break;
-                } else if (j >= priorities.length - 1 && i == location) {
-                    System.out.println("e1 answer = " + answer + ", i = " + i + ", j = " + j);
-                    priorities[i] = -1;
-                    answer++;
+        while (!queue.isEmpty()) {
+            boolean b = true;   // 우선순위가 높은 프로세스가 있는지 확인
+            int peek = queue.poll();    // 큐의 첫 값을 저장
+            int current = list.get(0);  // 큐의 첫 값의 인덱스
+            list.remove(0);
+
+            for (int i = 0; i < list.size(); i++) {
+                // 우선순위가 더 높은 프로세스가 있는지 확인
+                if (peek < priorities[list.get(i)]) {
+                    queue.offer(peek);  // 큐의 제일 뒤로 이동
+                    list.add(current);
                     b = false;
-                } else if (j >= priorities.length - 1) {
-                    System.out.println("e2 answer = " + answer + ", i = " + i + ", j = " + j);
-                    priorities[i] = -1;
-                    answer++;
-                    i++;
+                    break;
                 }
             }
+
+            // 우선순위가 더 높은 값이 없고, 현재 값이 목표 값일때
+            if (b && current == location) {
+                answer++;
+                return answer;
+            } else if (b) { // 우선순위가 높은 값은 없지만 현재 값이 목표 값이 아닐 때
+                answer++;
+            }
         }
+
         return answer;
     }
 
